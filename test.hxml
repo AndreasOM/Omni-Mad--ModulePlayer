@@ -1,0 +1,7 @@
+-main Test
+-cp test
+-cp build
+-swf test.swf
+-swf-lib build/ommp.swf
+-swf-lib testdata.swf
+-swf-version 10.1

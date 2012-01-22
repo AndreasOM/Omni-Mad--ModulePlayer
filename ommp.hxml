@@ -1,0 +1,4 @@
+-main ommp.ModulePlayer
+-cp ommp
+-swf ommp.swf
+-swf-version 10.1

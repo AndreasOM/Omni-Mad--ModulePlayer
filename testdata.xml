@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<movie version="9" width="600" height="400" framerate="120">
+    <background color="#FFFFFF"/>
+    <frame>
+        <library>
+			<binary id="TestMod01" import="test/data/test01.mod" />
+        </library>
+    </frame>
+</movie>
