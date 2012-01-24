@@ -33,22 +33,31 @@ class Test extends Sprite
 			Log.trace( "" + e.message);
 		}
 		
-		var debugBitmapData:BitmapData = new BitmapData( 256, 256, false , 0xaa2244 );
+		var debugBitmapData:BitmapData = new BitmapData( 768, 256, false , 0xaa2244 );
 		var debugBitmap:Bitmap = new Bitmap( debugBitmapData );
 		
 		addChild( debugBitmap );
-		debugBitmap.x = 800-256;
+		debugBitmap.x = 1050-debugBitmapData.width;
 		
-		var sampleIndex:Int = 0;
+		var renderSample:Int = 0;
 		try
 		{
-			sampleIndex = Std.parseInt( flash.Lib.current.loaderInfo.parameters.renderSample );
+			renderSample = Std.parseInt( flash.Lib.current.loaderInfo.parameters.renderSample );
+		}
+		catch (whatever:Dynamic)
+		{
+		}
+
+		var renderOffset:Int = 0;
+		try
+		{
+			renderOffset = Std.parseInt( flash.Lib.current.loaderInfo.parameters.renderOffset );
 		}
 		catch (whatever:Dynamic)
 		{
 		}
 				
 //		mp.renderSample( 0, 16, debugBitmapData );
-		mp.renderSample( 0, sampleIndex, debugBitmapData );
+		mp.renderSample( 0, renderSample, debugBitmapData, renderOffset, Std.int( debugBitmapData.width ) );
 	}
 }

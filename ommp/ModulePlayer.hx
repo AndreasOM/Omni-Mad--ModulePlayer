@@ -184,32 +184,86 @@ class ModulePlayer
 		Log.trace( "Done" );
 	}
 	
-	public function renderSample( instrument:Int, sampleIndex:Int, data:BitmapData )
+	public function renderSample( instrument:Int, sampleIndex:Int, data:BitmapData, offset:Int = 0, range:Int = 0 )
 	{
 		var sample = module.getSample( sampleIndex );
 		var wave = sample.getData();
 		Log.trace( "Rendering "+sample.name );
-		var sX:Float = data.width/sample.length;
-		var sY:Float = data.height/2.0;
+		if( range == 0 || range > sample.length-offset )
+		{
+			range = sample.length-offset;
+		}
+		
+		var sX:Float = data.width/range; //sample.length;
+		var sY:Float = data.height/2.05;
 		var oY:Int = Std.int( data.height/2.0 );
 		
 		data.lock();
 		data.setPixel( 5, 5, 0x000000 );
-		for( i in 0...sample.length )
+		
+		var lastY:Int = oY;
+		var lastX:Int = 0;
+		for( i in 0...range )
 		{
 			var x:Int = Std.int( i*sX );
-			var y:Int = Std.int( wave[ i ]*sY )+oY;
+			var y:Int = Std.int( wave[ offset+i ]*sY )+oY;
 			data.setPixel( x, y, 0x000000 );
+			bresenham( data, lastX, lastY, x, y, 0x000000 );
 /*
 			if( i<20 )
 			{
 				Log.trace( " "+wave[ i ]+" -> "+y );
 			}
 */
+			lastY = y;
+			lastX = x;
 		}
 		data.unlock();
 	}
 	
+// borrowed from http://code.google.com/p/brianin3d-lines/source/browse/trunk/us/versus/them/lines/App.hx
+// ported from http://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Optimization
+	public function bresenham( 
+		bitmapData : BitmapData
+		, x0 : Float
+		, y0 : Float
+		, x1 : Float
+		, y1 : Float
+		, c : UInt 
+	) {
+		var steep : Bool = Math.abs( y1 - y0 ) > Math.abs( x1 - x0 );
+		var tmp : Float;
+		if ( steep ) {
+			// swap x and y
+			tmp = x0; x0 = y0; y0 = tmp; // swap x0 and y0
+			tmp = x1; x1 = y1; y1 = tmp; // swap x1 and y1
+		}
+		if ( x0 > x1 ) {
+			// make sure x0 < x1
+			tmp = x0; x0 = x1; x1 = tmp; // swap x0 and x1
+			tmp = y0; y0 = y1; y1 = tmp; // swap y0 and y1
+		}
+		var deltax : Float = x1 - x0;
+		var deltay : Float = Math.abs( y1 - y0 );
+		var error  : Float = deltax / 2;
+		var y      : Float = y0;
+		var ystep  : Float = if ( y0 < y1 ) 1 else -1;
+		var x      : Float = x0;
+		while ( x < x1 ) {
+			if ( steep ) {
+				bitmapData.setPixel( Math.floor( y ), Math.floor( x ), c ) ;
+			} else {
+				bitmapData.setPixel( Math.floor( x ), Math.floor( y ), c );
+			}
+			error -= deltay;
+			if ( error < 0 ) {
+				y = y + ystep;
+				error = error + deltax;
+			}
+			x++;
+		}
+	}
+			
 	private function test()
 	{
 	
