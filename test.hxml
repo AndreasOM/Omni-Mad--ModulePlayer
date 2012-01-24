@@ -5,3 +5,4 @@
 -swf-lib build/ommp.swf
 -swf-lib testdata.swf
 -swf-version 10.1
+-swf-header 800:400:30:101020
