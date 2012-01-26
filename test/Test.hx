@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.utils.ByteArray;
 import haxe.Log;
+//import haxe.Math;
 
 import TestData;
 
@@ -59,5 +60,7 @@ class Test extends Sprite
 				
 //		mp.renderSample( 0, 16, debugBitmapData );
 		mp.renderSample( 0, renderSample, debugBitmapData, renderOffset, Std.int( debugBitmapData.width ) );
+		var channel = mp.playSample( 0, renderSample );
+//		mp.stopChannel( channel );
 	}
 }

@@ -1,11 +1,17 @@
 package ommp;
 
 import flash.display.BitmapData;
+import flash.events.SampleDataEvent;
+import flash.media.Sound;
+import flash.media.SoundChannel;
+import flash.utils.ByteArray;
 import flash.utils.ByteArray;
 
 import haxe.Log;
 
 import ommp.Module;
+
+import ommp.Channel;
 
 class ModulePlayer
 {
@@ -14,10 +20,12 @@ class ModulePlayer
 	}
 
 	var module:Module;
+	var channels:Array<Channel>;
 	
 	public function new()
 	{
 		module = null;
+		channels = [];
 	}
 
 	// :TODO: pull out getters into ByteArrayReader/File
@@ -184,6 +192,22 @@ class ModulePlayer
 		Log.trace( "Done" );
 	}
 	
+	public function playSample( instrument:Int, sampleIndex:Int ):Int
+	{
+		var s:Sound = new Sound();
+		channels[ 0 ] = new Channel();
+		channels[ 0 ].setSample( module.getSample( sampleIndex ) );
+		s.addEventListener( SampleDataEvent.SAMPLE_DATA, channels[ 0 ].handleSampleData );
+		channels[ 0 ].soundChannel = s.play();
+		return 0;
+	}
+	
+	public function stopChannel( channel:Int )
+	{
+		channels[ channel ].soundChannel.stop();
+		channels[ channel ].soundChannel = null;
+	}
+	
 	public function renderSample( instrument:Int, sampleIndex:Int, data:BitmapData, offset:Int = 0, range:Int = 0 )
 	{
 		var sample = module.getSample( sampleIndex );
@@ -263,6 +287,7 @@ class ModulePlayer
 			x++;
 		}
 	}
+			
 			
 	private function test()
 	{
